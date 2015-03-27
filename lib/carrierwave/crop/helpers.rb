@@ -21,10 +21,18 @@ module CarrierWave
 
         if(self.object.send(attachment).class.ancestors.include? CarrierWave::Uploader::Base )
           ## Fixes Issue #1 : Colons in html id attributes with Namespaced Models
-          model_name = self.object.class.name.downcase.split("::").last 
+          model_name = self.object.class.name.downcase.split("::").last
           width, height = 100, 100
           if(opts[:width] && opts[:height])
-            width, height = opts[:width].round, opts[:height].round
+            if opts[:width].is_a?(Float)
+              opts[:width] = opts[:width].round
+            end
+
+            if opts[:height].is_a?(Float)
+              opts[:height] = opts[:height].round
+            end
+
+            width, height = opts[:width], opts[:height]
           end
           wrapper_attributes = {id: "#{model_name}_#{attachment}_previewbox_wrapper", style: "width:#{width}px; height:#{height}px; overflow:hidden"}
           if opts[:version]
@@ -54,7 +62,7 @@ module CarrierWave
 
         if(attachment_instance.class.ancestors.include? CarrierWave::Uploader::Base )
           ## Fixes Issue #1 : Colons in html id attributes with Namespaced Models
-          model_name = self.object.class.name.downcase.split("::").last 
+          model_name = self.object.class.name.downcase.split("::").last
           hidden_elements  = self.hidden_field(:"#{attachment}_crop_x", id: "#{model_name}_#{attachment}_crop_x")
           [:crop_y, :crop_w, :crop_h].each do |attribute|
             hidden_elements << self.hidden_field(:"#{attachment}_#{attribute}", id: "#{model_name}_#{attachment}_#{attribute}")
