@@ -22,19 +22,22 @@ module CarrierWave
         if(self.object.send(attachment).class.ancestors.include? CarrierWave::Uploader::Base )
           ## Fixes Issue #1 : Colons in html id attributes with Namespaced Models
           model_name = self.object.class.name.downcase.split("::").last
-          width, height = 100, 100
+          width, height = "100px", "100px"
           if(opts[:width] && opts[:height])
-            if opts[:width].is_a?(Float)
-              opts[:width] = opts[:width].round
+            if opts[:width].is_a?(Float) || opts[:width].is_a?(Integer)
+              width = "#{opts[:width].round}px"
+            else
+              width = opts[:width]
             end
 
-            if opts[:height].is_a?(Float)
-              opts[:height] = opts[:height].round
+            if opts[:height].is_a?(Float) || opts[:height].is_a?(Integer)
+              opts[:height] = "#{opts[:height].round}px"
+            else
+              height = opts[:height]
             end
-
-            width, height = opts[:width], opts[:height]
           end
-          wrapper_attributes = {id: "#{model_name}_#{attachment}_previewbox_wrapper", style: "width:#{width}px; height:#{height}px; overflow:hidden"}
+
+          wrapper_attributes = {id: "#{model_name}_#{attachment}_previewbox_wrapper", style: "width:#{width}; height:#{height}; overflow:hidden"}
           if opts[:version]
             img = self.object.send(attachment).url(opts[:version])
           else
@@ -71,8 +74,22 @@ module CarrierWave
           box =  @template.content_tag(:div, hidden_elements, style: "display:none")
 
           wrapper_attributes = {id: "#{model_name}_#{attachment}_cropbox_wrapper"}
+
           if(opts[:width] && opts[:height])
-            wrapper_attributes.merge!(style: "width:#{opts[:width].round}px; height:#{opts[:height].round}px; overflow:hidden")
+            if opts[:width].is_a?(Float) || opts[:width].is_a?(Integer)
+                width = "#{opts[:width].round}px"
+              else
+                width = opts[:width]
+              end
+
+              if opts[:height].is_a?(Float) || opts[:height].is_a?(Integer)
+                opts[:height] = "#{opts[:height].round}px"
+              else
+                height = opts[:height]
+              end
+            end
+
+            wrapper_attributes.merge!(style: "width:#{width}; height:#{height}; overflow:hidden")
           end
 
           if opts[:version]
