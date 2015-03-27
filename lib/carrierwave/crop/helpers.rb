@@ -77,16 +77,15 @@ module CarrierWave
 
           if(opts[:width] && opts[:height])
             if opts[:width].is_a?(Float) || opts[:width].is_a?(Integer)
-                width = "#{opts[:width].round}px"
-              else
-                width = opts[:width]
-              end
+              width = "#{opts[:width].round}px"
+            else
+              width = opts[:width]
+            end
 
-              if opts[:height].is_a?(Float) || opts[:height].is_a?(Integer)
-                opts[:height] = "#{opts[:height].round}px"
-              else
-                height = opts[:height]
-              end
+            if opts[:height].is_a?(Float) || opts[:height].is_a?(Integer)
+              opts[:height] = "#{opts[:height].round}px"
+            else
+              height = opts[:height]
             end
 
             wrapper_attributes.merge!(style: "width:#{width}; height:#{height}; overflow:hidden")
